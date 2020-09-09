@@ -30,11 +30,53 @@ class	Solver:
 		self.puzzle.print_puzzle()
 
 	def	solve_puzzle(self):
-		# while not self.puzzle.is_solved(self.puzzle):
-		x = self.puzzle.up()
-		if x != -1:
-			x = Puzzle(x)
-			x.print_puzzle()
+		i = 0
+		start_puzzle = Puzzle(self.puzzle.puzzle)
+		closed_list = [[start_puzzle, None]]
+		curr_state = start_puzzle
+		open_list = []
+		g_score = 1
+		cost_so_far = 0
+
+		while not self.puzzle.is_solved(curr_state[0].puzzle):
+			print("current state: ")
+			curr_state.print_puzzle()
+			up = curr_state.up()
+			down = curr_state.down()
+			right = curr_state.right()
+			left = curr_state.left()
+			if up != -1:
+				print("up ", end='')
+				up = Puzzle(up, self.puzzle.side_length, True)
+				up.give_score(g_score)
+				open_list.append(up)
+			if down != -1:
+				print("down ", end='')
+				down = Puzzle(down, self.puzzle.side_length, True)
+				down.give_score(g_score)
+				open_list.append(down)
+			if right != -1:
+				print("right ", end='')
+				right = Puzzle(right, self.puzzle.side_length, True)
+				right.give_score(g_score)
+				open_list.append(right)
+			if left != -1:
+				print("left ", end='')
+				left = Puzzle(left, self.puzzle.side_length, True)
+				left.give_score(g_score)
+				open_list.append(left)
+			g_score += 1
+
+			score_list = [x[0].score for x in open_list]
+			lowest_index = score_list.index(min(score_list))
+			print("move to make: ")
+			open_list[lowest_index][0].print_puzzle()
+			closed_list.append(open_list[lowest_index])
+			curr_state = open_list[lowest_index]
+			del open_list[lowest_index]
+			i += 1
+
+		print(*(x[1] for x in closed_list))
 		# print(self.puzzle.down())
 		# print(self.puzzle.right())
 		# print(self.puzzle.left())

@@ -1,9 +1,26 @@
 class Puzzle:
-	def __init__(self, puzzle=None, side_length=3):
-		self.puzzle = puzzle
+	def __init__(self, puzzle=None, side_length=3, gen_solution=False):
+		if puzzle != None:
+			self.puzzle = [row.copy() for row in puzzle]
+		else:
+			self.puzzle = None
 		self.score = 0
 		self.side_length = side_length
-		self.snail_solution = None
+		if (gen_solution == True):
+			self.generate_snail_solution(self.gen_empty_puzzle(side_length), 1, 0, 0, 'right')
+		else:
+			self.snail_solution = None
+	
+	def give_score(self, g_score):
+		score = g_score
+
+		for y in range(len(self.puzzle)):
+			for x in range(len(self.puzzle)):
+				if self.puzzle[y][x] != self.snail_solution[y][x] and self.puzzle[y][x] != 0:
+					score += 1
+
+		print("score: " + str(score))
+		self.score = score
 	
 	def set_side_length(self, side_length):
 		self.side_length = side_length
@@ -72,7 +89,7 @@ class Puzzle:
 		ret_puzzle = []
 
 		for row in self.puzzle:
-			ret_puzzle.append(row)
+			ret_puzzle.append(row.copy())
 
 		for y in range(len(self.puzzle)):
 			for x in range(len(row)):
@@ -89,12 +106,12 @@ class Puzzle:
 		ret_puzzle = []
 
 		for row in self.puzzle:
-			ret_puzzle.append(row)
+			ret_puzzle.append(row.copy())
 
 		for y in range(len(self.puzzle)):
 			for x in range(len(row)):
 				if ret_puzzle[y][x] == 0:
-					if y < len(self.puzzle) - 1:
+					if y < (len(self.puzzle) - 1):
 						tmp = ret_puzzle[y][x]
 						ret_puzzle[y][x] = ret_puzzle[y + 1][x]
 						ret_puzzle[y + 1][x] = tmp
@@ -106,7 +123,7 @@ class Puzzle:
 		ret_puzzle = []
 
 		for row in self.puzzle:
-			ret_puzzle.append(row)
+			ret_puzzle.append(row.copy())
 
 		for y in range(len(self.puzzle)):
 			for x in range(len(row)):
@@ -123,7 +140,7 @@ class Puzzle:
 		ret_puzzle = []
 
 		for row in self.puzzle:
-			ret_puzzle.append(row)
+			ret_puzzle.append(row.copy())
 
 		for y in range(len(self.puzzle)):
 			for x in range(len(row)):
