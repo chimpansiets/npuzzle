@@ -1,9 +1,10 @@
 class Puzzle:
-	def __init__(self, puzzle=None, side_length=3, gen_solution=False):
+	def __init__(self, puzzle=None, parent=None, side_length=3, gen_solution=False):
 		if puzzle != None:
 			self.puzzle = [row.copy() for row in puzzle]
 		else:
 			self.puzzle = None
+		self.parent = parent
 		self.score = 0
 		self.side_length = side_length
 		if (gen_solution == True):
