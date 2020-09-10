@@ -1,11 +1,11 @@
 from Puzzle import Puzzle
+import hashlib
 
-def puzzle_equ(puzzle1, puzzle2):
-	for y in range(len(puzzle1)):
-		for x in range(len(puzzle1[y])):
-			if puzzle1[y][x] != puzzle2[y][x]:
-				return (0)
-	return (1)
+def puzzle_in_list(oc_list, puzzle):
+	for curr_puzzle in oc_list:
+		if str(curr_puzzle) == str(puzzle):
+			return (True)
+	return (False)
 
 class	Solver:
 	def	__init__(self):
@@ -38,8 +38,10 @@ class	Solver:
 
 	def	solve_puzzle(self):
 		i = 0
-		start_puzzle = Puzzle(self.puzzle.puzzle)
-		closed_list = []
+		start_puzzle = Puzzle(self.puzzle.puzzle, None, self.puzzle.side_length)
+		start_puzzle.generate_snail_solution(start_puzzle.gen_empty_puzzle(start_puzzle.side_length), 1, 0, 0, 'right')
+		start_puzzle.give_score(0)
+		all_puzzles = []
 		open_list = []
 		current = start_puzzle
 		g_score = 1
@@ -48,11 +50,13 @@ class	Solver:
 		open_list.append(current)
 		while len(open_list) > 0:
 			# Find the item in the open set with the lowest f score
-			score_list = [x.score for x in open_list]
+			score_list = [x.h_score for x in open_list]
 			lowest_index = score_list.index(min(score_list))
 			# print("move to make: ")
 			# open_list[lowest_index].print_puzzle()
 			current = open_list[lowest_index]
+			print("current: " + str(current.score))
+			current.print_puzzle()
 
 			if self.puzzle.is_solved(current.puzzle):
 				path = []
@@ -60,39 +64,40 @@ class	Solver:
 					path.append(current)
 					current = current.parent
 				path.append(current)
-				list(map(lambda x: x.print_puzzle(), path[::-1]))
+				list(map(lambda x: print(x.move_made), path[::-1]))
 				return path[::-1]
-			
-			open_list.remove(current)
-			closed_list.append(current)
-			print("current state: ")
-			current.print_puzzle()
+
 			up = current.up()
 			down = current.down()
 			right = current.right()
 			left = current.left()
 			if up != -1:
-				print("up ", end='')
-				up = Puzzle(up, current, self.puzzle.side_length, True)
+				up = Puzzle(up, current, self.puzzle.side_length, True, 'right')
 				up.give_score(g_score)
-				open_list.append(up)
+				if not (str(up.puzzle) in all_puzzles):
+					open_list.append(up)
+					all_puzzles.append(str(up.puzzle))
 			if down != -1:
-				print("down ", end='')
-				down = Puzzle(down, current, self.puzzle.side_length, True)
+				down = Puzzle(down, current, self.puzzle.side_length, True, 'down')
 				down.give_score(g_score)
-				open_list.append(down)
+				if not (str(down.puzzle) in all_puzzles):
+					open_list.append(down)
+					all_puzzles.append(str(down.puzzle))
 			if right != -1:
-				print("right ", end='')
-				right = Puzzle(right, current, self.puzzle.side_length, True)
+				right = Puzzle(right, current, self.puzzle.side_length, True, 'right')
 				right.give_score(g_score)
-				open_list.append(right)
+				if not (str(right.puzzle) in all_puzzles):
+					open_list.append(right)
+					all_puzzles.append(str(right.puzzle))
 			if left != -1:
-				print("left ", end='')
-				left = Puzzle(left, current, self.puzzle.side_length, True)
+				left = Puzzle(left, current, self.puzzle.side_length, True, 'left')
 				left.give_score(g_score)
-				open_list.append(left)
-			g_score += 1
+				if not (str(left.puzzle) in all_puzzles):
+					open_list.append(left)
+					all_puzzles.append(str(left.puzzle))
 
+			open_list.remove(current)
+			g_score += 1
 			i += 1
 
 		# print(self.puzzle.down())

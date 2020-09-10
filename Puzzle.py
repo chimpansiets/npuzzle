@@ -1,28 +1,44 @@
+def manhattan_distance(puzzle, solution, y, x):
+	for i in range(len(solution)):
+		for j in range(len(solution[i])):
+			if solution[i][j] == puzzle[y][x]:
+				return (abs(i - y) + abs(j - x))
+
 class Puzzle:
-	def __init__(self, puzzle=None, parent=None, side_length=3, gen_solution=False):
+	def __init__(self, puzzle=None, parent=None, side_length=3, gen_solution=False, move_made=None):
 		if puzzle != None:
 			self.puzzle = [row.copy() for row in puzzle]
 		else:
 			self.puzzle = None
 		self.parent = parent
 		self.score = 0
+		self.h_score = 0
+		self.g_score = 0
 		self.side_length = side_length
+		self.move_made = move_made
 		if (gen_solution == True):
 			self.generate_snail_solution(self.gen_empty_puzzle(side_length), 1, 0, 0, 'right')
 		else:
 			self.snail_solution = None
-	
-	def give_score(self, g_score):
-		score = g_score
 
-		for y in range(len(self.puzzle)):
-			for x in range(len(self.puzzle)):
-				if self.puzzle[y][x] != self.snail_solution[y][x] and self.puzzle[y][x] != 0:
-					score += 1
+	def give_score(self, g_score, heur='manhattan'):
+		self.g_score = g_score
+		score = 0
 
-		print("score: " + str(score))
-		self.score = score
-	
+		if (heur == 'hamming'):
+			for y in range(len(self.puzzle)):
+				for x in range(len(self.puzzle)):
+					if self.puzzle[y][x] != self.snail_solution[y][x] and self.puzzle[y][x] != 0:
+						score += 1
+			self.h_score = score
+		elif (heur == 'manhattan'):
+			for y in range(len(self.puzzle)):
+				for x in range(len(self.puzzle)):
+					score += manhattan_distance(self.puzzle, self.snail_solution, y, x)
+			self.h_score = score
+
+		self.score = self.g_score + self.h_score
+
 	def set_side_length(self, side_length):
 		self.side_length = side_length
 	
