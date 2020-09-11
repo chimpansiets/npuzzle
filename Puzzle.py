@@ -30,12 +30,22 @@ class Puzzle:
 				for x in range(len(self.puzzle)):
 					if self.puzzle[y][x] != self.snail_solution[y][x] and self.puzzle[y][x] != 0:
 						score += 1
-			self.h_score = score
-		elif (heur == 'manhattan'):
+		elif (heur == 'manhattan') or (heur == 'sietse'):
 			for y in range(len(self.puzzle)):
 				for x in range(len(self.puzzle)):
 					score += manhattan_distance(self.puzzle, self.snail_solution, y, x)
-			self.h_score = score
+		if (heur == 'sietse'):
+			# self.print_puzzle()
+			# self.print_snail_solution()
+			pairs = []
+			for y in range(len(self.puzzle)):
+				for x in range(len(self.puzzle)):
+					if self.puzzle[y][x] != self.snail_solution[y][x] and self.puzzle[y][x] != 0 and self.snail_solution[y][x] != 0:
+						pairs.append([self.puzzle[y][x], self.snail_solution[y][x]])
+			for pair in pairs:
+				if pair[::-1] in pairs:
+					score += 1
+		self.h_score = score
 
 		self.score = self.g_score + self.h_score
 

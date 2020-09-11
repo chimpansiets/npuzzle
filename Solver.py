@@ -10,7 +10,10 @@ def puzzle_in_list(oc_list, puzzle):
 class	Solver:
 	def	__init__(self):
 		self.puzzle = Puzzle()
-		self.heuristic =  "Manhattan"
+		self.heuristic =  "manhattan"
+
+	def set_heuristic(self, heuristic):
+		self.heuristic = heuristic
 
 	def get_input(self, file_name):
 		f = open(file_name, "r")
@@ -46,6 +49,7 @@ class	Solver:
 		current = start_puzzle
 		g_score = 1
 		cost_so_far = 0
+		maxStates = 0
 
 		open_list.append(current)
 		while len(open_list) > 0:
@@ -55,8 +59,8 @@ class	Solver:
 			# print("move to make: ")
 			# open_list[lowest_index].print_puzzle()
 			current = open_list[lowest_index]
-			print("current: " + str(current.score))
-			current.print_puzzle()
+			# print("current: " + str(current.score))
+			# current.print_puzzle()
 
 			if self.puzzle.is_solved(current.puzzle):
 				path = []
@@ -64,7 +68,11 @@ class	Solver:
 					path.append(current)
 					current = current.parent
 				path.append(current)
-				list(map(lambda x: print(x.move_made), path[::-1]))
+				# print(len(path))
+				print("Total states: %i" % i)
+				print("Max number of states in memory: %i" % maxStates)
+				print("Moves required: %i" % (len(path) - 1))
+				# list(map(lambda x: print(x.move_made), path[::-1]))
 				return path[::-1]
 
 			up = current.up()
@@ -72,29 +80,33 @@ class	Solver:
 			right = current.right()
 			left = current.left()
 			if up != -1:
-				up = Puzzle(up, current, self.puzzle.side_length, True, 'right')
-				up.give_score(g_score)
+				up = Puzzle(up, current, self.puzzle.side_length, True, 'up')
+				up.give_score(g_score, self.heuristic)
 				if not (str(up.puzzle) in all_puzzles):
 					open_list.append(up)
 					all_puzzles.append(str(up.puzzle))
 			if down != -1:
 				down = Puzzle(down, current, self.puzzle.side_length, True, 'down')
-				down.give_score(g_score)
+				down.give_score(g_score, self.heuristic)
 				if not (str(down.puzzle) in all_puzzles):
 					open_list.append(down)
 					all_puzzles.append(str(down.puzzle))
 			if right != -1:
 				right = Puzzle(right, current, self.puzzle.side_length, True, 'right')
-				right.give_score(g_score)
+				right.give_score(g_score, self.heuristic)
 				if not (str(right.puzzle) in all_puzzles):
 					open_list.append(right)
 					all_puzzles.append(str(right.puzzle))
 			if left != -1:
 				left = Puzzle(left, current, self.puzzle.side_length, True, 'left')
-				left.give_score(g_score)
+				left.give_score(g_score, self.heuristic)
 				if not (str(left.puzzle) in all_puzzles):
 					open_list.append(left)
 					all_puzzles.append(str(left.puzzle))
+
+			# Maximum number of states ever represented in memory
+			if len(open_list) > maxStates:
+				maxStates = len(open_list)
 
 			open_list.remove(current)
 			g_score += 1
