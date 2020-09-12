@@ -16,7 +16,11 @@ class	Solver:
 		self.heuristic = heuristic
 
 	def get_input(self, file_name):
-		f = open(file_name, "r")
+		try:
+			f = open(file_name, "r")
+		except IOError:
+			print("Your input file does not appear to exist")
+			exit(1)
 		side_length = 0
 		y_ctr = 0
 		counting = False
@@ -37,6 +41,7 @@ class	Solver:
 					counting = True
 			if counting == True:
 					y_ctr += 1
+		print("Input: ")
 		self.puzzle.print_puzzle()
 
 	def	solve_puzzle(self):
