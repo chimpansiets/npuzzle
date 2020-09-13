@@ -20,6 +20,30 @@ class Puzzle:
 			self.generate_snail_solution(self.gen_empty_puzzle(side_length), 1, 0, 0, 'right')
 		else:
 			self.snail_solution = None
+	
+	def is_solvable(self):
+		inversions = 0
+		res = ''
+
+		for y in range(len(self.puzzle)):
+			for x in range(len(self.puzzle[y])):
+				res += str(self.puzzle[y][x])
+		
+		for i in range(len(res)):
+			for j in range(i + 1, len(res)):
+				if res[i] > res[j]:
+					inversions += 1
+		
+		if len(self.puzzle) % 2 == 0:
+			if inversions % 2 != 0:
+				return (False)
+			else:
+				return (True)
+		else:
+			if inversions % 2 == 0:
+				return (False)
+			else:
+				return (True)
 
 	def give_score(self, g_score, heur='manhattan'):
 		self.g_score = g_score

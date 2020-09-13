@@ -54,7 +54,12 @@ if __name__ == "__main__":
 		print("Snail solution: ")
 		solver.puzzle.print_snail_solution()
 		parse_arguments(solver, sys.argv)
-		path = solver.solve_puzzle()
+		print(solver.puzzle.is_solvable())
+		if solver.puzzle.is_solvable():
+			solver.solve_puzzle()
+		else:
+			print("Puzzle is not solvable")
+
 	elif '-i' in sys.argv:
 		root = Tk()
 		frame=Frame(root, width=300, height=300)
