@@ -3,6 +3,9 @@ from Puzzle import Puzzle
 from Solver import Solver
 from tkinter import *
 
+CRED = "\x1b[5;30;41m"
+CEND = "\x1b[0m"
+
 def insert_input(solver, gui_text, file_name):
 	side_length = 0
 	y_ctr = 0
@@ -54,11 +57,10 @@ if __name__ == "__main__":
 		print("Snail solution: ")
 		solver.puzzle.print_snail_solution()
 		parse_arguments(solver, sys.argv)
-		print(solver.puzzle.is_solvable())
 		if solver.puzzle.is_solvable():
 			solver.solve_puzzle()
 		else:
-			print("Puzzle is not solvable")
+			print(CRED + "Puzzle is not solvable" + CEND)
 
 	elif '-i' in sys.argv:
 		root = Tk()
@@ -68,7 +70,6 @@ if __name__ == "__main__":
 		solver.get_input(sys.argv[1])
 		solver.puzzle.generate_snail_solution(solver.puzzle.gen_empty_puzzle(solver.puzzle.side_length), 1, 0, 0, 'right')
 
-		print(solver.puzzle.side_length)
 		height = 50 + (40 * (solver.puzzle.side_length - 3))
 		width = 50 + (40 * (solver.puzzle.side_length - 3))
 		tbox1 = Text(frame)

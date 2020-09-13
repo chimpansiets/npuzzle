@@ -23,17 +23,22 @@ class Puzzle:
 	
 	def is_solvable(self):
 		inversions = 0
-		res = ''
+		res = []
+		sol = []
 
 		for y in range(len(self.puzzle)):
 			for x in range(len(self.puzzle[y])):
-				res += str(self.puzzle[y][x])
-		
+				res.append(self.puzzle[y][x])
+
+		for y in range(len(self.snail_solution)):
+			for x in range(len(self.snail_solution[y])):
+				sol.append(self.snail_solution[y][x])
+
 		for i in range(len(res)):
 			for j in range(i + 1, len(res)):
-				if res[i] > res[j]:
+				if sol.index(res[i]) > sol.index(res[j]):
 					inversions += 1
-		
+
 		if len(self.puzzle) % 2 == 0:
 			if inversions % 2 != 0:
 				return (False)
